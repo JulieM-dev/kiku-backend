@@ -1,0 +1,61 @@
+package com.mongault.kiku.controller;
+
+import com.mongault.kiku.dto.CardDto;
+import com.mongault.kiku.mapper.CardMapper;
+import com.mongault.kiku.model.Card;
+import com.mongault.kiku.model.ReviewMode;
+import com.mongault.kiku.service.CardService;
+import com.mongault.kiku.service.DeckService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/cards")
+@RequiredArgsConstructor
+public class CardController {
+
+    private final CardService cardService;
+    private final DeckService deckService;
+    private final CardMapper cardMapper;
+
+    @GetMapping("/deck/{deckId}")
+    public List<CardDto> findByDeck(@PathVariable Long deckId) {
+        return cardService.findByDeckId(deckId).stream()
+                .map(cardMapper::toDto)
+                .toList();
+    }
+
+    @GetMapping("/deck/{deckId}/due")
+    public List<CardDto> findDue(@PathVariable Long deckId) {
+        return cardService.findDueCards(deckId).stream()
+                .map(cardMapper::toDto)
+                .toList();
+    }
+
+    @GetMapping("/deck/{deckId}/duebymode")
+    public List<CardDto> findDueByMode(@PathVariable Long deckId, ReviewMode mode) {
+        return cardService.findDueCardsByMode(deckId, mode).stream()
+                .map(cardMapper::toDto)
+                .toList();
+    }
+
+    @GetMapping("/{id}")
+    public CardDto findById(@PathVariable Long id) {
+        return cardMapper.toDto(cardService.findById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<CardDto> create(@RequestBody CardDto dto) {
+        Card saved = cardService.save(
+                cardMapper.toEntity(dto, deckService.findById(dto.deckId())));
+        return ResponseEntity.ok(cardMapper.toDto(saved));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        cardService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+}

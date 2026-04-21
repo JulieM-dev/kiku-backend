@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=kiku'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5432:5432'
+
+  voicevox:
+    image: voicevox/voicevox_nemo_engine:cpu-ubuntu20.04-latest
+    ports:
+      - '50021:50121'
+    tty: true
