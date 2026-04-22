@@ -30,4 +30,4 @@ app:
     engine: voicevox
     cache-dir: /tmp/kiku/audio-cache
   voicevox:
-    base-url: http://localhost:50121
+    base-url: http://localhost:50021
