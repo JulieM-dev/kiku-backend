@@ -29,19 +29,17 @@ public class AudioService {
                     .maxInMemorySize(10 * 1024 * 1024))
             .build();
 
-    public void streamAudio(Long cardId, OutputStream outputStream) throws IOException {
-        Card card = cardService.findById(cardId);
+    public void streamAudio(String japaneseText, OutputStream outputStream) throws IOException {
         Random random = new Random();
         int min = 5;
         int max = 8;
         int speaker = random.nextInt((max - min) + 1) + min;
-        log.info("Generating audio for card {} with kana: {}", cardId, card.getKana());
 
 
         // Step 1 — get audio query from VoiceVox
         String audioQuery = webClient.post()
                 .uri(voicevoxBaseUrl + "/audio_query?text={text}&speaker=1000" + speaker,
-                        card.getJapanese())
+                        japaneseText)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -56,5 +54,10 @@ public class AudioService {
                 .block();
 
         outputStream.write(audioBytes);
+    }
+
+    public void streamAudioByCardId (Long cardId, OutputStream outputStream) throws IOException {
+        Card card = cardService.findById(cardId);
+        streamAudio(card.getJapanese(), outputStream);
     }
 }

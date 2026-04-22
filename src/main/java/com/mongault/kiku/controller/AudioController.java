@@ -15,10 +15,22 @@ public class AudioController {
 
     private final AudioService audioService;
 
-    @GetMapping(value = "/{cardId}", produces = "audio/wav")
+    @GetMapping(value = "/card/{cardId}", produces = "audio/wav")
     public ResponseEntity<StreamingResponseBody> streamAudio(@PathVariable Long cardId) {
         StreamingResponseBody stream = outputStream ->
-                audioService.streamAudio(cardId, outputStream);
+                audioService.streamAudioByCardId(cardId, outputStream);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "audio/wav")
+                .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                .header(HttpHeaders.CACHE_CONTROL, "public, max-age=86400")
+                .body(stream);
+    }
+
+    @GetMapping(value = "/text/{japaneseText}", produces = "audio/wav")
+    public ResponseEntity<StreamingResponseBody> streamAudio(@PathVariable String japaneseText) {
+        StreamingResponseBody stream = outputStream ->
+                audioService.streamAudio(japaneseText, outputStream);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "audio/wav")
