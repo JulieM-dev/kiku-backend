@@ -1,5 +1,6 @@
 package com.mongault.kiku.service;
 
+import com.mongault.kiku.factory.CardReviewFactory;
 import com.mongault.kiku.model.Card;
 import com.mongault.kiku.model.CardReview;
 import com.mongault.kiku.model.Deck;
@@ -24,6 +25,7 @@ public class CardService {
     private static final int MAX_DUE_CARDS_PER_MODE = 20;
 
     private final CardRepository cardRepository;
+    private final CardReviewFactory cardReviewFactory;
 
     public Card findById(Long id) {
         if (id == null) {
@@ -65,6 +67,11 @@ public class CardService {
                 LocalDate.now(),
                 PageRequest.of(0, MAX_DUE_CARDS_PER_MODE)   //Limit of cards per mode per day per deck
         );
+    }
+
+    public Card createCard(Card card) {
+        card.getReviews().addAll(cardReviewFactory.createInitialReviews(card));
+        return cardRepository.save(card);
     }
 
     public Card save(Card card) {
