@@ -29,6 +29,7 @@ public class CardReviewService {
     }
 
 
+
     @Transactional
     public CardReview submitAnswer(Long cardId, ReviewMode mode, int quality) {
         CardReview review = cardReviewRepository.findByCardIdAndMode(cardId, mode)
@@ -112,7 +113,7 @@ public class CardReviewService {
         return save(cardReviewFactory.create(review.getCard(), review.getMode()));
     }
 
-    public List<CardReview> resetAll(Card card) {
+    public List<CardReview> initReviews(Card card) {
         if (card == null) {
             throw new IllegalArgumentException("card is null");
         }

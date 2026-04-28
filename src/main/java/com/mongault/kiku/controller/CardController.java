@@ -1,16 +1,19 @@
 package com.mongault.kiku.controller;
 
 import com.mongault.kiku.dto.CardDto;
+import com.mongault.kiku.dto.SubmitAnswerDto;
 import com.mongault.kiku.mapper.CardMapper;
 import com.mongault.kiku.model.Card;
 import com.mongault.kiku.model.ReviewMode;
 import com.mongault.kiku.service.CardService;
 import com.mongault.kiku.service.DeckService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/cards")
 @RequiredArgsConstructor
@@ -46,10 +49,13 @@ public class CardController {
         return cardMapper.toDto(cardService.findById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<CardDto> create(@RequestBody CardDto dto) {
-        Card saved = cardService.save(
-                cardMapper.toEntity(dto, deckService.findById(dto.deckId())));
+    @PostMapping("create/{deckId}")
+    public ResponseEntity<CardDto> create(@PathVariable Long deckId, @RequestBody CardDto dto) {
+        log.info("CardController info; received a card");
+        log.debug("CardController debug; received a card");
+        Card saved = cardService.createCard(
+                cardMapper.newCardToEntity(dto, deckService.findById(deckId)));
+        log.info("CardController info; card : " + saved.toString());
         return ResponseEntity.ok(cardMapper.toDto(saved));
     }
 
