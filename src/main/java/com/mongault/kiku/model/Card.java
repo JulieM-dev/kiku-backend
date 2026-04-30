@@ -18,6 +18,9 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Long initialOrder;
+
     @Column(nullable = false)
     private String japanese;
 

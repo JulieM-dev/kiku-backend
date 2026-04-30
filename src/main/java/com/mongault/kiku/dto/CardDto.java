@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record CardDto(
         Long id,
+        Long initialOrder,
         String japanese,
         String kana,
         String romaji,

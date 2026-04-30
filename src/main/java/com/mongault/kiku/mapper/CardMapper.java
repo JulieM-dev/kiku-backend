@@ -11,6 +11,7 @@ public class CardMapper {
     public CardDto toDto(Card card) {
         return CardDto.builder()
                 .id(card.getId())
+                .initialOrder(card.getInitialOrder())
                 .japanese(card.getJapanese())
                 .kana(card.getKana())
                 .romaji(card.getRomaji())
@@ -23,6 +24,7 @@ public class CardMapper {
     public Card toEntity(CardDto dto, Deck deck) {
         return Card.builder()
                 .id(dto.id())
+                .initialOrder(dto.initialOrder())
                 .japanese(dto.japanese())
                 .kana(dto.kana())
                 .romaji(dto.romaji())

@@ -25,6 +25,7 @@ public class Deck {
     private String description;
 
     @OneToMany(mappedBy = "deck", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("initialOrder ASC")
     @Builder.Default
     private List<Card> cards = new ArrayList<>();
 }

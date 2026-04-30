@@ -59,6 +59,15 @@ public class CardController {
         return ResponseEntity.ok(cardMapper.toDto(saved));
     }
 
+    @PostMapping("edit/{deckId}")
+    public ResponseEntity<CardDto> edit(@PathVariable long deckId, @RequestBody CardDto dto) {
+        log.info("CardController info; edit Card received");
+        Card saved = cardService.save(
+                cardMapper.toEntity(dto, deckService.findById(deckId)));
+        log.info("CardController info; card edited : " + saved.toString());
+        return ResponseEntity.ok(cardMapper.toDto(saved));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cardService.deleteById(id);

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import java.time.LocalDate;
+
 import java.util.List;
 
 @Slf4j
@@ -174,8 +174,10 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     private void saveCardsWithReviews(List<Card> cards) {
+        long order = 0;
         for (Card card : cards) {
             card.getReviews().addAll(cardReviewFactory.createInitialReviews(card));
+            card.setInitialOrder(order++);
             cardRepository.save(card);
         }
     }
