@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +31,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String username;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Deck> decks = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -50,4 +56,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() { return true; }
+
+    public String getDisplayName() { return username; }
 }
