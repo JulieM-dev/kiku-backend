@@ -17,6 +17,13 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+### ENV / SECRETS ###
+.env
+application-prod.yml
+
+### DOCKER ###
+docker-compose.override.yml
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
