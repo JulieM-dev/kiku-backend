@@ -4,6 +4,7 @@ import com.mongault.kiku.dto.AuthResponseDto;
 import com.mongault.kiku.dto.LoginDto;
 import com.mongault.kiku.dto.RegisterDto;
 import com.mongault.kiku.model.User;
+import com.mongault.kiku.repository.DeckRepository;
 import com.mongault.kiku.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final DeckService deckService;
 
     public AuthResponseDto register(RegisterDto dto) {
         if (userRepository.existsByEmail(dto.email())) {
@@ -32,6 +34,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+        deckService.createDefaultDecks(user);
         String token = jwtService.generateToken(user);
         return new AuthResponseDto(user.getDisplayName(), user.getEmail(), token);
     }
