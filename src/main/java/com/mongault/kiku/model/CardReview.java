@@ -29,6 +29,7 @@ public class CardReview {
     private ReviewMode mode;
 
     @Column(nullable = false)
+    @Builder.Default
     private int quality = 0;          // 0-5
 
     @Column(nullable = false)
