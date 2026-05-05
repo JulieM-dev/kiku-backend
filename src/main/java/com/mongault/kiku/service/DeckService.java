@@ -1,13 +1,12 @@
 package com.mongault.kiku.service;
 
-import com.mongault.kiku.model.Card;
-import com.mongault.kiku.model.CardReview;
-import com.mongault.kiku.model.Deck;
-import com.mongault.kiku.model.ReviewMode;
+import com.mongault.kiku.factory.DeckFactory;
+import com.mongault.kiku.model.*;
 import com.mongault.kiku.repository.DeckRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,7 @@ public class DeckService {
 
 
     private final DeckRepository deckRepository;
+    private final DeckFactory deckFactory;
 
     public Deck findById(Long id, Long userId) {
         return deckRepository.findByIdAndUserId(id, userId)
@@ -34,6 +34,11 @@ public class DeckService {
             throw new IllegalArgumentException("Deck is null");
         }
         return deckRepository.save(deck);
+    }
+
+    @Transactional
+    public void createDefaultDecks(User user) {
+        deckFactory.createDefaultDecks(user);
     }
 
 
