@@ -19,13 +19,13 @@ public class DeckService {
 
     private final DeckRepository deckRepository;
 
-    public Deck findById(Long id) {
-        return deckRepository.findById(id)
+    public Deck findById(Long id, Long userId) {
+        return deckRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Deck not found: " + id));
     }
 
-    public List<Deck> findAll() {
-        return deckRepository.findAll();
+    public List<Deck> findAll(Long userId) {
+        return deckRepository.findByUserId(userId);
     }
 
 

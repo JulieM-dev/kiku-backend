@@ -2,15 +2,16 @@ package com.mongault.kiku.repository;
 
 import com.mongault.kiku.model.Card;
 import com.mongault.kiku.model.ReviewMode;
+import jakarta.persistence.OrderBy;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
-
 
 
     List<Card> findByDeckId(Long deckId);
@@ -36,4 +37,10 @@ public interface CardRepository extends JpaRepository<Card, Long> {
         ORDER BY review.nextReview ASC
     """)
     List<Card> findDueCards(Long deckId, LocalDate today, Pageable pageable);
+
+    @Query("""
+        SELECT MAX(card.initialOrder) FROM Card card
+        WHERE card.deck.id = :deckId
+    """)
+    Long findHighestOrder(@Param("deckId") Long deckId);
 }

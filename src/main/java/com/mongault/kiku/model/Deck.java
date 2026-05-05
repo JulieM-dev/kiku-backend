@@ -18,6 +18,10 @@ public class Deck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private String name;
 
@@ -25,6 +29,7 @@ public class Deck {
     private String description;
 
     @OneToMany(mappedBy = "deck", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("initialOrder ASC")
     @Builder.Default
     private List<Card> cards = new ArrayList<>();
 }

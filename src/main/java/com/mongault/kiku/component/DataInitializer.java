@@ -1,15 +1,18 @@
 package com.mongault.kiku.component;
 
+import com.mongault.kiku.dto.RegisterDto;
 import com.mongault.kiku.factory.CardReviewFactory;
 import com.mongault.kiku.model.*;
 import com.mongault.kiku.repository.CardRepository;
 import com.mongault.kiku.repository.DeckRepository;
+import com.mongault.kiku.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import java.time.LocalDate;
+
 import java.util.List;
 
 @Slf4j
@@ -19,7 +22,10 @@ public class DataInitializer implements ApplicationRunner {
 
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
+    private final UserRepository userRepository;
     private final CardReviewFactory cardReviewFactory;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public void run(ApplicationArguments args) {
@@ -30,20 +36,30 @@ public class DataInitializer implements ApplicationRunner {
 
         log.info("Initializing database with sample data...");
 
+
+        User testUser = userRepository.save(User.builder()
+                .username("Test User")
+                .email("test@mail.com")
+                .password(passwordEncoder.encode("123456"))
+                .build());
+
         Deck jlptN5Deck = deckRepository.save(Deck.builder()
                 .name("JLPT N5 vocabulaire")
                 .description("Vocabulaire japonais de base")
+                .user(testUser)
                 .build());
 
 
         Deck phraseDeck = deckRepository.save(Deck.builder()
                 .name("JLPT N5 phrases")
                 .description("Phrases japonaises de base")
+                .user(testUser)
                 .build());
 
         Deck casualPhraseDeck = deckRepository.save(Deck.builder()
-                .name("JLPT N5 phrases")
+                .name("JLPT N5 phrases casual")
                 .description("Phrases japonaises casual")
+                .user(testUser)
                 .build());
 
 
@@ -174,8 +190,10 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     private void saveCardsWithReviews(List<Card> cards) {
+        long order = 0;
         for (Card card : cards) {
             card.getReviews().addAll(cardReviewFactory.createInitialReviews(card));
+            card.setInitialOrder(order++);
             cardRepository.save(card);
         }
     }

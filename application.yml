@@ -23,9 +23,13 @@ spring:
       lifecycle-management: start-and-stop
 
 server:
+  address: 0.0.0.0
   port: 8080
 
 app:
+  jwt:
+    secret: kiku-super-secret-key-must-be-at-least-32-characters-long
+    expiration: 86400000
   tts:
     engine: voicevox
     cache-dir: /tmp/kiku/audio-cache

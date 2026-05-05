@@ -2,8 +2,6 @@ package com.mongault.kiku.service;
 
 import com.mongault.kiku.factory.CardReviewFactory;
 import com.mongault.kiku.model.Card;
-import com.mongault.kiku.model.CardReview;
-import com.mongault.kiku.model.Deck;
 import com.mongault.kiku.model.ReviewMode;
 import com.mongault.kiku.repository.CardRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -70,6 +67,7 @@ public class CardService {
     }
 
     public Card createCard(Card card) {
+        card.setInitialOrder(cardRepository.findHighestOrder(card.getDeck().getId()+1));
         card.getReviews().addAll(cardReviewFactory.createInitialReviews(card));
         return cardRepository.save(card);
     }

@@ -5,11 +5,13 @@ import com.mongault.kiku.dto.SubmitAnswerDto;
 import com.mongault.kiku.mapper.CardMapper;
 import com.mongault.kiku.model.Card;
 import com.mongault.kiku.model.ReviewMode;
+import com.mongault.kiku.model.User;
 import com.mongault.kiku.service.CardService;
 import com.mongault.kiku.service.DeckService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -50,12 +52,21 @@ public class CardController {
     }
 
     @PostMapping("create/{deckId}")
-    public ResponseEntity<CardDto> create(@PathVariable Long deckId, @RequestBody CardDto dto) {
+    public ResponseEntity<CardDto> create(@PathVariable Long deckId, @RequestBody CardDto dto, @AuthenticationPrincipal User user) {
         log.info("CardController info; received a card");
         log.debug("CardController debug; received a card");
         Card saved = cardService.createCard(
-                cardMapper.newCardToEntity(dto, deckService.findById(deckId)));
+                cardMapper.newCardToEntity(dto, deckService.findById(deckId, user.getId())));
         log.info("CardController info; card : " + saved.toString());
+        return ResponseEntity.ok(cardMapper.toDto(saved));
+    }
+
+    @PostMapping("edit/{deckId}")
+    public ResponseEntity<CardDto> edit(@PathVariable long deckId, @RequestBody CardDto dto, @AuthenticationPrincipal User user) {
+        log.info("CardController info; edit Card received");
+        Card saved = cardService.save(
+                cardMapper.toEntity(dto, deckService.findById(deckId, user.getId())));
+        log.info("CardController info; card edited : " + saved.toString());
         return ResponseEntity.ok(cardMapper.toDto(saved));
     }
 
