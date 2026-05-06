@@ -28,10 +28,10 @@ public class AudioController {
     }
 
     @GetMapping(value = "/text/{japaneseText}", produces = "audio/wav")
-    public ResponseEntity<StreamingResponseBody> streamAudio(@PathVariable String japaneseText) {
-        StreamingResponseBody stream = outputStream ->
-                audioService.streamAudio(japaneseText, outputStream);
+    public ResponseEntity<StreamingResponseBody> streamAudio(@PathVariable String japaneseText, @RequestParam(defaultValue = "6") String gender) {
 
+        StreamingResponseBody stream = outputStream ->
+                audioService.streamAudioWithGender(japaneseText, gender, outputStream);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "audio/wav")
                 .header(HttpHeaders.ACCEPT_RANGES, "bytes")
