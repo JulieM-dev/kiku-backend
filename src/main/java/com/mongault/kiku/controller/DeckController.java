@@ -5,6 +5,7 @@ import com.mongault.kiku.mapper.DeckMapper;
 import com.mongault.kiku.model.Deck;
 import com.mongault.kiku.model.User;
 import com.mongault.kiku.service.DeckService;
+import com.mongault.kiku.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ public class DeckController {
 
     private final DeckService deckService;
     private final DeckMapper deckMapper;
+    private final TokenService tokenService;
 
     @GetMapping
     public List<DeckDto> findAll(@AuthenticationPrincipal User user) {
@@ -32,8 +34,8 @@ public class DeckController {
     }
 
     @PostMapping
-    public ResponseEntity<DeckDto> create(@RequestBody DeckDto dto) {
-        Deck saved = deckService.save(deckMapper.toEntity(dto));
+    public ResponseEntity<DeckDto> create(@RequestBody DeckDto dto, @AuthenticationPrincipal User user) {
+        Deck saved = deckService.save(deckMapper.toEntity(dto, user));
         return ResponseEntity.ok(deckMapper.toDto(saved));
     }
 
