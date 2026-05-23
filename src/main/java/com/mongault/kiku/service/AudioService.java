@@ -56,6 +56,29 @@ public class AudioService {
         outputStream.write(audioBytes);
     }
 
+    public void streamAudioWithGender(String japaneseText, String speaker, OutputStream outputStream) throws IOException {
+
+
+        // Step 1 — get audio query from VoiceVox
+        String audioQuery = webClient.post()
+                .uri(voicevoxBaseUrl + "/audio_query?text={text}&speaker=1000" + speaker,
+                        japaneseText)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        // Step 2 — synthesize and stream bytes directly to client
+        byte[] audioBytes = webClient.post()
+                .uri(voicevoxBaseUrl + "/synthesis?speaker=1000"+speaker)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .bodyValue(audioQuery)
+                .retrieve()
+                .bodyToMono(byte[].class)
+                .block();
+
+        outputStream.write(audioBytes);
+    }
+
     public void streamAudioByCardId (Long cardId, OutputStream outputStream) throws IOException {
         Card card = cardService.findById(cardId);
         streamAudio(card.getJapanese(), outputStream);
